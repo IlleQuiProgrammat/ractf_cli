@@ -3,7 +3,7 @@
 #include <cstdlib>
 
 void RACTFCLI::prompt() {
-    std::cout << m_CTFName;
+    std::cout << m_apiConnection.teamName << " @ " << m_apiConnection.CTFName;
     if (!m_subcategories.empty()) {
         std::cout << " - " << m_subcategories[0];
         if (m_subcategories.size() > 1) {
@@ -102,4 +102,13 @@ Command reference:)==" << std::endl;
 int RACTFCLI::exec_clear(std::string &arguments) {
     clearScreen();
     return EXIT_SUCCESS;
+}
+
+int RACTFCLI::exec_download(std::string &arguments) {
+    // TODO: download (all) files
+    return commandError("Operation not currently supported");
+}
+
+int RACTFCLI::exec_quit(std::string& arguments) {
+    return 1;
 }

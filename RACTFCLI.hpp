@@ -7,13 +7,13 @@
 #include <map>
 #include <functional>
 
+#include "RACTFAPI.hpp"
+#include <cpprest/http_client.h>
+
 class RACTFCLI {
 public:
-    RACTFCLI(std::string_view apiEndpoint, std::string_view token) :
-            m_apiEndpoint(apiEndpoint), m_token(token) {
-        // TODO: get from server
-        m_CTFName = "RACTF";
-
+    RACTFCLI(const web::uri& apiEndpoint, const std::string& username, const std::string& password, int otp) :
+            m_apiConnection(apiEndpoint, username, password, otp) {
 #pragma region registering_command
         commandMap["help"] = &RACTFCLI::exec_help;
         commandDescriptions["help"] = "Shows this help message";
@@ -30,11 +30,19 @@ public:
         commandMap["addcat"] = &RACTFCLI::exec_addCategory;
         commandDescriptions["addcat"] = "Adds categories to the internal category level tracker - testing";
         commandRegistration.emplace_back("addcat");
+
+        commandMap["download"] = &RACTFCLI::exec_download;
+        commandDescriptions["download"] =
+                "downloads current problem or all problems if `download all` is run, provides directory structure";
+        commandRegistration.emplace_back("download");
+
+        commandMap["quit"] = &RACTFCLI::exec_quit;
+        commandDescriptions["quit"] = "exit";
+        commandRegistration.emplace_back("quit");
 #pragma endregion
     }
     void run();
 
-    static std::string retrieveApiKey(std::string_view username, std::string_view password, int TOTPCode);
 private:
 
     void prompt();
@@ -47,13 +55,10 @@ private:
     int exec_addCategory(std::string& arguments);
     int exec_help(std::string& arguments);
     int exec_clear(std::string& arguments);
-    int exec_cd(std::string& arguments);
-    int exec_pwd(std::string& arguments);
+    int exec_download(std::string& arguments);
+    int exec_quit(std::string& arguments);
 
-    std::string_view m_apiEndpoint;
-    std::string_view m_token;
-
-    std::string m_CTFName;
+    RACTFAPI m_apiConnection;
 
     std::vector<std::string> m_subcategories;
 

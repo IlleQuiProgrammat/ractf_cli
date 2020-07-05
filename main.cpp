@@ -1,8 +1,8 @@
 #include "RACTFCLI.hpp"
-
+#include <cpprest/http_client.h>
 int main() {
-    RACTFCLI cli("http://localhost:8080/", "token");
+    web::uri endpoint = U("http://localhost:8080/");
+    RACTFCLI cli(endpoint, "local", "password", -1);
     cli.run();
-    std::cin.get();
     return 0;
 }
