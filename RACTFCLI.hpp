@@ -12,7 +12,7 @@
 
 class RACTFCLI {
 public:
-    RACTFCLI(const web::uri& apiEndpoint, const std::string& username, const std::string& password, int otp) :
+    RACTFCLI(const web::uri& apiEndpoint, const std::string& username, const std::string& password, const std::string& otp) :
             m_apiConnection(apiEndpoint, username, password, otp) {
 #pragma region registering_command
         commandMap["help"] = &RACTFCLI::exec_help;
@@ -30,6 +30,11 @@ public:
         commandMap["addcat"] = &RACTFCLI::exec_addCategory;
         commandDescriptions["addcat"] = "Adds categories to the internal category level tracker - testing";
         commandRegistration.emplace_back("addcat");
+
+        commandMap["list"] = &RACTFCLI::exec_list;
+        commandDescriptions["list"] =
+                "lists all problems";
+        commandRegistration.emplace_back("list");
 
         commandMap["download"] = &RACTFCLI::exec_download;
         commandDescriptions["download"] =
@@ -57,6 +62,7 @@ private:
     int exec_clear(std::string& arguments);
     int exec_download(std::string& arguments);
     int exec_quit(std::string& arguments);
+    int exec_list(std::string& arguments);
 
     RACTFAPI m_apiConnection;
 

@@ -1,6 +1,7 @@
 #include "RACTFCLI.hpp"
 
 #include <cstdlib>
+#include <exception>
 
 void RACTFCLI::prompt() {
     std::cout << m_apiConnection.teamName << " @ " << m_apiConnection.CTFName;
@@ -14,7 +15,7 @@ void RACTFCLI::prompt() {
                         std::cout << it << "/";
                         }
                     );
-            std::cout << *(m_subcategories.end() - 1) << ") ";
+            std::cout << *(m_subcategories.end() - 1) << ") "@;
         }
     }
     std::cout << "> ";
@@ -33,7 +34,11 @@ void RACTFCLI::clearScreen() {
 void RACTFCLI::run() {
     int exitCode = 0;
     while (exitCode == 0) {
-        exitCode = executeCommand();
+        try {
+            exitCode = executeCommand();
+        } catch (std::exception& e) {
+            std::cerr << e.what() << std::endl;
+        }
     }
     std::cout << exitCode << std::endl;
 }
@@ -111,4 +116,20 @@ int RACTFCLI::exec_download(std::string &arguments) {
 
 int RACTFCLI::exec_quit(std::string& arguments) {
     return 1;
+}
+
+int RACTFCLI::exec_list(std::string &arguments) {
+    // TODO: Only on launch for speed perhaps?
+    m_apiConnection.reloadCategories();
+    std::cout << "Result3: " << m_apiConnection.categories.serialize() << std::endl;
+    for (auto& category : m_apiConnection.categories[U("d")].as_array()) {
+        std::cout << category[U("name")].as_string() << "\n";
+        for (auto& challenge : category[U("challenges")].as_array()) {
+            if (!challenge[U("name")].is_null())
+                std::cout << "\t" << challenge[U("score")].as_number().to_int32() << " - "
+                    << challenge[U("name")].as_string() << " (" << challenge[U("id")].as_number().to_int32()
+                    << ")\n";
+        }
+    }
+    return 0;
 }

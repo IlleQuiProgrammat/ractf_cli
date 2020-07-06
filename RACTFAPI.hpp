@@ -8,22 +8,24 @@
 
 class RACTFAPI {
 public:
-    RACTFAPI(const web::uri& apiEndpoint, const std::string& username, std::string password, int otp = -1)
+    RACTFAPI(const web::uri& apiEndpoint, const std::string& username, const std::string& password, const std::string& otp = "-1")
         : apiClient(apiEndpoint), username(username)
         {
-            generateToken(username, std::move(password), otp);
-            fetchData();
+            generateToken(username, password, otp);
+            fetchCTFInformation();
         }
 
-    void generateToken(const std::string& username, const std::string& password, int otp);
+    void generateToken(const std::string& username, const std::string& password, const std::string& otp);
+    void reloadCategories();
 
     std::string CTFName;
     std::string username;
     std::string teamName;
+    web::json::value categories;
 private:
 
 
-    void fetchData();
+    void fetchCTFInformation();
 
     std::string token;
     web::http::client::http_client apiClient;

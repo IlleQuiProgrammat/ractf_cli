@@ -1,8 +1,24 @@
 #include "RACTFCLI.hpp"
 #include <cpprest/http_client.h>
 int main() {
-    web::uri endpoint = U("http://localhost:8080/");
-    RACTFCLI cli(endpoint, "local", "password", -1);
+    // TODO: Config file
+    web::uri endpoint = U("https://api.ractf.co.uk/api/v2/");
+    std::string username, password, otp;
+
+    std::cout << "Username: ";
+    std::cout.flush();
+    std::cin >> username;
+
+    // TODO: hide password
+    std::cout << "Password: ";
+    std::cout.flush();
+    std::cin >> password;
+
+    std::cout << "TOTP Code (-1 if this is not enabled): ";
+    std::cout.flush();
+    std::cin >> otp;
+
+    RACTFCLI cli(endpoint, username, password, otp);
     cli.run();
     return 0;
 }

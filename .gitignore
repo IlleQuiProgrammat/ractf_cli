@@ -1,0 +1,6 @@
+*.o
+*.a
+*.so
+CMakeFiles/
+cmake-build-debug
+cmake-build-release
