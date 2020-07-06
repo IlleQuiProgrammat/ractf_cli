@@ -6,6 +6,6 @@ add_definitions(-DBOOST_ASIO_DISABLE_CONCEPTS)
 
 
 find_package(cpprestsdk REQUIRED)
-add_executable(RACTF_CLI main.cpp RACTFCLI.cpp RACTFCLI.hpp RACTFAPI.cpp RACTFAPI.hpp)
+add_executable(RACTF_CLI main.cpp CLI.cpp CLI.hpp ractf/API.cpp ractf/API.hpp ractf/Challenge.cpp ractf/Challenge.hpp ractf/Category.cpp ractf/Category.hpp)
 target_link_libraries(RACTF_CLI PRIVATE cpprestsdk::cpprest)
 target_link_libraries(RACTF_CLI PRIVATE crypto)

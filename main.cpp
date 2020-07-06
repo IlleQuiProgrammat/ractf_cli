@@ -1,5 +1,8 @@
-#include "RACTFCLI.hpp"
+#include "CLI.hpp"
+
 #include <cpprest/http_client.h>
+#include <filesystem>
+
 int main() {
     // TODO: Config file
     web::uri endpoint = U("https://api.ractf.co.uk/api/v2/");
@@ -18,7 +21,7 @@ int main() {
     std::cout.flush();
     std::cin >> otp;
 
-    RACTFCLI cli(endpoint, username, password, otp);
+    ractf::CLI cli(endpoint, username, password, otp);
     cli.run();
     return 0;
 }
