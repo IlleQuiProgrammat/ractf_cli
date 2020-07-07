@@ -3,7 +3,7 @@
 #include <thread>
 
 namespace ractf {
-    void API::generateToken(const std::string &uname, const std::string &password, const std::string &otp) {
+    void API::generateToken(const std::string& uname, const std::string& password, const std::string& otp) {
         web::json::value loginDetails;
         loginDetails[U("username")] = web::json::value::string(uname, false);
         loginDetails[U("password")] = web::json::value::string(password, false);
@@ -15,11 +15,10 @@ namespace ractf {
 
         auto req = apiClient.request(web::http::methods::POST, "/auth/login/", loginDetails.serialize(),
                                      U("application/json")).then(
-                [](const web::http::http_response &response) {
+                [](const web::http::http_response& response) {
                     if (response.status_code() != 200) {
-                        throw std::runtime_error(
-                                "Endpoint /auth/login/ returned " + std::to_string(response.status_code())
-                                + " instead of 200.\nMore information:\n" + response.to_string());
+                        throw std::runtime_error("Endpoint /auth/login/ returned " + std::to_string(response.status_code())
+                                                 + " instead of 200.\nMore information:\n" + response.to_string());
                     }
                     return response.extract_json();
                 }

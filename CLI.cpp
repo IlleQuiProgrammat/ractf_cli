@@ -125,11 +125,37 @@ Command reference:)==" << std::endl;
         m_apiConnection.reloadCategories();
         for (auto &category : m_apiConnection.categories) {
             std::cout << category.name << "\n";
+            std::sort(category.challenges.begin(), category.challenges.end(),
+                    [](Challenge& a, Challenge& b){
+                        if (a.solved) {
+                            return false;
+                        } else if (b.solved) {
+                            return true;
+                        } else {
+                            return a.score > b.score;
+                        }
+                    });
             for (auto &challenge : category.challenges) {
                 if (!challenge.hidden)
-                    std::cout << "\t" << challenge.score << " - " << challenge.name << " (" << challenge.challenge_id
-                              << ")\n";
+                    (challenge.solved ? std::cout << "\t(SOLVED)" : std::cout << "\t" << challenge.score) << " - "
+                                                                                                          << challenge.name
+                                                                                                          << " ("
+                                                                                                          << challenge.challenge_id
+                                                                                                          << ")\n";
             }
+        }
+        return 0;
+    }
+
+    int CLI::exec_use(std::string &arguments) {
+        try {
+            int id = std::stoi(arguments);
+            m_subcategories.clear();
+            if (id != -1 && m_apiConnection.challengeByID.contains(id)) {
+                auto& [name, challengeptr] = m_apiConnection.challengeByID[id];
+            }
+        } catch (...) {
+            std::cerr << "Error converting argument to id" << std::endl;
         }
         return 0;
     }

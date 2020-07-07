@@ -11,7 +11,7 @@ namespace ractf {
             containedType = ContainedType::unknown;
 
             for (auto &challenge : jsonData[U("challenges")].as_array()) {
-                challenges.emplace_back(challenge);
+                challenges.emplace_back(challenge, name);
             }
         } catch (...) {
             std::cerr << "Error whilst parsing category data." << std::endl;

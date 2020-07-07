@@ -28,6 +28,7 @@ namespace ractf {
         std::string firstBloodTeam;
         int solveCount;
         int category;
+        std::string categoryName;
         ChallengeType challengeType;
         FlagType flagType;
         std::vector<std::string> files;
@@ -35,7 +36,7 @@ namespace ractf {
 
         Challenge() = default;
 
-        explicit Challenge(web::json::value &jsonData);
+        Challenge(web::json::value &jsonData, std::string& categoryName);
     };
 }
 
