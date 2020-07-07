@@ -10,7 +10,7 @@ namespace ractf {
         if (otp == "-1") {
             loginDetails[U("otp")] = web::json::value::null();
         } else {
-            loginDetails[U("otp")] = web::json::value::string(otp);
+            loginDetails[U("otp")] = web::json::value::string(otp, false);
         }
 
         auto req = apiClient.request(web::http::methods::POST, "/auth/login/", loginDetails.serialize(),
@@ -67,7 +67,7 @@ namespace ractf {
                 }
         ).then([this](web::json::value jsonResponse) {
             for (auto &it : jsonResponse[U("d")].as_array()) {
-                categories.emplace_back(it);
+                categories.emplace_back(it, &challengeMap);
             }
         });
 

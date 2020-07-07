@@ -3,6 +3,7 @@
 #include <vector>
 #include <cpprest/json.h>
 
+
 namespace ractf {
     enum class ChallengeType {
         def = 0,
@@ -35,8 +36,12 @@ namespace ractf {
         std::vector<int> unlocks;
 
         Challenge() = default;
+        void operator=(web::json::value& rhs);
 
-        Challenge(web::json::value &jsonData, std::string& categoryName);
+        Challenge(web::json::value &jsonData, std::string_view categoryName,
+                std::unordered_map<int,std::pair<std::string, Challenge*>>* registrationMap = nullptr);
+
+        void parseJson(web::json::value &jsonData);
     };
 }
 

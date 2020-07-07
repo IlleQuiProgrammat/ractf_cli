@@ -137,11 +137,12 @@ Command reference:)==" << std::endl;
                     });
             for (auto &challenge : category.challenges) {
                 if (!challenge.hidden)
-                    (challenge.solved ? std::cout << "\t(SOLVED)" : std::cout << "\t" << challenge.score) << " - "
-                                                                                                          << challenge.name
-                                                                                                          << " ("
-                                                                                                          << challenge.challenge_id
-                                                                                                          << ")\n";
+                    (challenge.solved ? std::cout << "\t(SOLVED)" : std::cout << "\t" << challenge.score)
+                                                                                                << " - "
+                                                                                                << challenge.name
+                                                                                                << " ("
+                                                                                                << challenge.challenge_id
+                                                                                                << ")\n";
             }
         }
         return 0;
@@ -151,12 +152,53 @@ Command reference:)==" << std::endl;
         try {
             int id = std::stoi(arguments);
             m_subcategories.clear();
-            if (id != -1 && m_apiConnection.challengeByID.contains(id)) {
-                auto& [name, challengeptr] = m_apiConnection.challengeByID[id];
+            if (id != -1 && m_apiConnection.challengeMap.contains(id)) {
+                auto& [category_name, challengeptr] = m_apiConnection.challengeMap[id];
+                m_subcategories.push_back(category_name);
+                m_subcategories.push_back(challengeptr->name);
+                currChal = id;
+            } else {
+                std::cerr << "Command not found or has not been registered" << std::endl;
             }
         } catch (...) {
             std::cerr << "Error converting argument to id" << std::endl;
         }
         return 0;
+    }
+
+    int CLI::exec_show(std::string &arguments) {
+        int challenge = -1;
+        try {
+            challenge = std::stoi(arguments);
+        } catch (...) {
+            return commandError("Invalid argument(s)");
+        }
+        if (challenge == -1) challenge = currChal;
+        if (m_apiConnection.challengeMap.contains(challenge)) {
+            auto& [category_name, challengeptr] = m_apiConnection.challengeMap[challenge];
+            if (challengeptr->unlocked && !challengeptr->hidden) {
+                std::cout << "Challenge name: " << category_name << "/" << challengeptr->name << (challengeptr->solved ? " - SOLVED" : "")
+                        << "\nPoints:         " << challengeptr->score
+                        << "\nAuthor:         " << challengeptr->author
+                        << "\nFirst Blood:    " << challengeptr->firstBloodTeam << " @ " << challengeptr->firstBlood
+                       << "s\nTotal solves:   " << challengeptr->solveCount
+                        << "\nAuthor:         " << challengeptr->author
+                        << "\nDescription:\n\n" << challengeptr->description
+                        << "\n\nFiles:\n";
+                if (!challengeptr->files.empty())
+                    for (const auto& file : challengeptr->files)  {
+                        std::cout << "\t" << file << "\n";
+                    }
+                else {
+                    std::cout << "\tNo files.";
+                }
+                std::cout << std::endl;
+                return 0;
+            } else {
+                return commandError("This is either locked or hidden please try another challenge.");
+            }
+        } else {
+            return commandError("Challenge not found");
+        }
     }
 }

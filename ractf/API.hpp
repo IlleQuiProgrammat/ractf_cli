@@ -29,7 +29,7 @@ namespace ractf {
         std::string username;
         std::string teamName;
         std::vector<Category> categories;
-        std::unordered_map<int, std::pair<std::string, Challenge*>> challengeByID;
+        std::unordered_map<int, std::pair<std::string, Challenge*>> challengeMap;
     private:
 
 

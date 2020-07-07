@@ -2,9 +2,9 @@
 #include "API.hpp"
 
 namespace ractf {
-    Challenge::Challenge(web::json::value &jsonData, std::string& categoryName) {
+
+    void Challenge::parseJson(web::json::value& jsonData) {
         try {
-            this->categoryName = categoryName;
             if (jsonData[U("hidden")].as_bool() || !jsonData[U("unlocked")].as_bool()) {
                 challenge_id = -1;
                 score = -1;
@@ -43,13 +43,21 @@ namespace ractf {
                     files.push_back(it[U("url")].as_string());
                 }
             }
-
-//            if (registrationPoint != nullptr) {
-//                registrationPoint->challengeByID[challenge_id] = std::make_pair(categoryName, this);
-//            }
-
         } catch (...) {
             std::cerr << "Error whilst parsing challenge data" << std::endl;
+        }
+    }
+
+    void Challenge::operator=(web::json::value &rhs) {
+        parseJson(std::forward<web::json::value&>(rhs));
+    }
+
+    Challenge::Challenge(web::json::value &jsonData, std::string_view categoryName,
+                         std::unordered_map<int, std::pair<std::string, Challenge *>> *registrationMap) {
+        parseJson(std::forward<web::json::value&>(jsonData));
+        this->categoryName = categoryName;
+        if (registrationMap) {
+            (*registrationMap)[challenge_id] = std::make_pair(categoryName, this);
         }
     }
 }

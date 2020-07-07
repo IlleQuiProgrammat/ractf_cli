@@ -43,6 +43,11 @@ namespace ractf {
                     "lists all problems";
             commandRegistration.emplace_back("list");
 
+
+            commandMap["show"] = &CLI::exec_show;
+            commandDescriptions["show"] = "Shows current problem or specified id";
+            commandRegistration.emplace_back("show");
+
             commandMap["download"] = &CLI::exec_download;
             commandDescriptions["download"] =
                     "downloads current problem or all problems if `download all` is run, provides directory structure";
@@ -51,6 +56,7 @@ namespace ractf {
             commandMap["quit"] = &CLI::exec_quit;
             commandDescriptions["quit"] = "exit";
             commandRegistration.emplace_back("quit");
+
 #pragma endregion
         }
 
@@ -74,9 +80,11 @@ namespace ractf {
         int exec_quit(std::string &arguments);
         int exec_list(std::string &arguments);
         int exec_use(std::string& arguments);
+        int exec_show(std::string& arguments);
 
         API m_apiConnection;
 
+        int currChal = -1;
         std::vector<std::string> m_subcategories;
 
         std::unordered_map<std::string, int (CLI::*)(std::string &)> commandMap;

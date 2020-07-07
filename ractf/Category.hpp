@@ -29,6 +29,8 @@ namespace ractf {
         Category() = default;
 
         explicit Category(web::json::value &jsonData);
+        Category(web::json::value& jsonData,
+                std::unordered_map<int,std::pair<std::string, Challenge*>>* registrationMap = nullptr);
     };
 }
 
