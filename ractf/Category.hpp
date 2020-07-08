@@ -24,7 +24,7 @@ namespace ractf {
         std::string description;
         ContainedType containedType;
 
-        std::vector<Challenge> challenges;
+        std::vector<std::unique_ptr<Challenge>> challenges;
 
         Category() = default;
 

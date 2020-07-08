@@ -126,22 +126,22 @@ Command reference:)==" << std::endl;
         for (auto &category : m_apiConnection.categories) {
             std::cout << category.name << "\n";
             std::sort(category.challenges.begin(), category.challenges.end(),
-                    [](Challenge& a, Challenge& b){
-                        if (a.solved) {
+                    [](std::unique_ptr<Challenge>& a, std::unique_ptr<Challenge>& b){
+                        if (a->solved) {
                             return false;
-                        } else if (b.solved) {
+                        } else if (b->solved) {
                             return true;
                         } else {
-                            return a.score > b.score;
+                            return a->score > b->score;
                         }
                     });
             for (auto &challenge : category.challenges) {
-                if (!challenge.hidden)
-                    (challenge.solved ? std::cout << "\t(SOLVED)" : std::cout << "\t" << challenge.score)
+                if (!challenge->hidden)
+                    (challenge->solved ? std::cout << "\t(SOLVED)" : std::cout << "\t" << challenge->score)
                                                                                                 << " - "
-                                                                                                << challenge.name
+                                                                                                << challenge->name
                                                                                                 << " ("
-                                                                                                << challenge.challenge_id
+                                                                                                << challenge->challenge_id
                                                                                                 << ")\n";
             }
         }
@@ -177,7 +177,10 @@ Command reference:)==" << std::endl;
         if (m_apiConnection.challengeMap.contains(challenge)) {
             auto& [category_name, challengeptr] = m_apiConnection.challengeMap[challenge];
             if (challengeptr->unlocked && !challengeptr->hidden) {
-                std::cout << "Challenge name: " << category_name << "/" << challengeptr->name << (challengeptr->solved ? " - SOLVED" : "")
+                std::cout << "Challenge name: " << category_name << "/" << challengeptr->name;
+                if (challengeptr->solved)
+                    std::cout << " - SOLVED";
+                std::cout
                         << "\nPoints:         " << challengeptr->score
                         << "\nAuthor:         " << challengeptr->author
                         << "\nFirst Blood:    " << challengeptr->firstBloodTeam << " @ " << challengeptr->firstBlood
